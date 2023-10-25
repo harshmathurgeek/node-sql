@@ -6,7 +6,6 @@ const path=require('path')
 const { getStorage, ref, uploadBytesResumable,getDownloadURL } = require("firebase/storage");
 
 const validator=require('validator')
-const db=require('./db');
 const firebaseConfig = {
     apiKey: "AIzaSyDkTVL_FS17diZVH852oQRG-dB__o6Lnzw",
     authDomain: "care-club-4b0b6.firebaseapp.com",
@@ -95,8 +94,7 @@ app.get('/login',(req,res)=>{
     res.render('login')
 })
 app.get('/register',(req,res)=>{
-    P
-    res.sendFile('E:/care club/register.html')
+res.render('register')    
 })
 app.post('/login', 
   passport.authenticate('local', {failureRedirect:'/login/error'}),(req,res)=>{
