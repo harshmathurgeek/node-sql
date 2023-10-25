@@ -1,4 +1,5 @@
 const passport=require('passport');
+const userData=require('./models/userData');
 const firebase=require('firebase/app')
 const multer=require('multer');
 const { getStorage, ref, uploadBytesResumable,getDownloadURL } = require("firebase/storage");
@@ -30,91 +31,64 @@ app.get('/auth/google',
   passport.authenticate('google', { scope:[ 'email', 'profile' ] })
 );
 
-app.get( '/auth/google/callback',passport.authenticate( 'google',{failureRedirect: '/login/error'}),(req,res)=>{
+app.get( '/auth/google/callback',passport.authenticate( 'google',{failureRedirect: '/login/error'}),async(req,res)=>{
     var response=[];
-    
-    db.query(`SELECT * FROM user_data WHERE u_email='${req.user.email}'`,   function  (err,rows)     {
-        if(err)
-        {
-            response.push(
-                {
-                "success":'false'
-                },
-                {
-                    "err":err
-                }
-                )
-                return res.send(response);
+    let user=await userData.findOne({u_email:req.user.email});
+    if(user){
+        response.push(
+            {
+            "success":'true'
+            },
+            {
+                "msg":'welcome back old user'
+            }
+            )
+            return res.send(response);
+  }
+else{
+    let newUser=new userData({
+
+        u_name:req.user.displayName,
+        u_email:req.user.email,
+        u_password:" ",
+        Image_URL:req.user.photos[0].value,
+        // u_phone:null,
+        G_user:1
+    })
+
+    newUser.save().then((result)=>{
+        console.log(result)
+        response.push(
+            {
+                    "success":"true",
+            },
+            {
+                "data":newUser
+            },
+            
+            {
+                "msg":"data inserted successfully using google API"
+            }
+            )
+            req.session.user=req.user;
+
+            return res.send(response);
+       
+    }).catch((err)=>{
+        console.log(err);
+        response.push(
+            {
+            "success":'false'
+            },
+            {
+                "err":err
+            }
+            )
+            return res.send(response);  
+    })
+}})
 
 
-
-
-                
-        }
-        else{
-
-            if(rows.length >0){
-                response.push(
-                    {
-                    "success":'true'
-                    },
-                    {
-                        "msg":"Welcome Back Old User"
-                    }
-                    )
-                    req.session.user=req.user;
-                res.send(response)
-            }   
-                else{
-        var form_data = {
-            u_name:req.user.displayName,
-            u_email:req.user.email,
-            u_password:" ",
-            Image_URL:req.user.photos[0].value,
-            u_phone:null,
-            G_user:1
-        }
-        db.query('INSERT INTO user_data SET ?', form_data, function(err, result) {
-            if (result) {
-              
-                response.push(
-                    {
-                            "success":"true",
-                    },
-                    {
-                        "data":form_data
-                    },
-                    
-                    {
-                        "msg":"data inserted successfully using google API"
-                    }
-                    )
-                    req.session.user=req.user;
-
-                    return res.send(response);
-               
-            //    return res.send(response);
-            } else {    
-                response.push(
-                    {
-                    "success":'false'
-                    },
-                    {
-                        "err":err
-                    }
-                    )
-                    return res.send(response);
-                    
-                }
-          });  
-                     }
-     }
-    });
-    
-    
-    // res.redirect('/login/success')
-}
-);
 
 app.get('/click',(req,res)=>{
     res.send('<a href="http://localhost:3000/auth/google">Sign up with google</a> ')
@@ -153,12 +127,25 @@ app.get('/login/error',(req,res)=>{
     ]
     res.send(response);
 })
+// app.post('/logout', function(req, res, next) {
+//     let response=[]
+//   req.logout(function(err) {
+//     if (err) { return next(err); }
+//   delete req.session.user;
+//     response.push({
+//         "sucess":'true'
+//     },{
+//         "msg":"logot successfully"
+//     })  
+//     res.send(response);
+//   });
+// });
 app.post('/register',upload.single("Image_URL"),async(req,res)=>{
 
     var response=[];
-    let u_name=req.body.u_name
-    let u_email = req.body.u_email;
-    let u_password = req.body.u_password;
+    let u_name=req.body.name
+    let u_email = req.body.email;
+    let u_password = req.body.password;
     let errors = false;
 
     if(u_email.length === 0 || u_name === 0 || u_password.length === 0 ) {
@@ -174,26 +161,27 @@ app.post('/register',upload.single("Image_URL"),async(req,res)=>{
         // set flash message
         return res.send(response);
     }
- if (!validator.isEmail(req.body.u_email)) {
+     if (!validator.isAlpha(req.body.name)) {
+        errors='true';
+    response.push({"success":'false'},{'err':" name can not include numbers and specaial symbols"})
+      return res.send(response);
+    }
+ if (!validator.isEmail(req.body.email)) {
     errors='true';
     response.push({"success":'false'},{'err':"email is invalid"})
       return res.send(response);
     }
-    if (!validator.isStrongPassword(req.body.u_password)) {
+    if (!validator.isStrongPassword(req.body.password)) {
         errors='true';
     response.push({"success":'false'},{'err':"Password must be of 8 characters and it must contain a capital letter, a number and a special character"})
         return res.send(response)
     }
+    let oldUser=await userData.findOne({u_email:req.body.email});
+    if(oldUser){
 
-    db.query(`SELECT * FROM user_data WHERE u_email='${u_email}'`,function(err,rows)     {
-        if(rows.length >0) {
-            // render to views/users/index.ejs
-
-            response.push({"success":'false'},{"err":"email already exits"})
-         return   res.send(response);   
-        } 
-        
-    });
+        response.push({"success":'false'},{"err":"email already exits"})
+     return   res.send(response);   
+    }
 
     // if no error
     if (!errors) {
@@ -208,49 +196,47 @@ app.post('/register',upload.single("Image_URL"),async(req,res)=>{
           const snapshot=await uploadBytesResumable(storageRef, req.file.buffer,metaData)
         const downloadurl=await getDownloadURL(snapshot.ref);
     
-        var form_data = {
-            u_name:u_name,
-            u_email: u_email,
-            u_password:u_password,
+        let newUser =new userData ({
+            u_name:req.body.name,
+            u_email: req.body.email,
+            u_password:req.body.password,
             Image_URL:downloadurl,
-            u_phone:null,
+            // u_phone:null,
             G_user:0
-        }
-        
-        // insert query
-        db.query('INSERT INTO user_data SET ?', form_data, function(err, result) {
-            //if(err) throw err
-            if (result) {
-              
-                response.push(
-                    {
-                            "success":"true",
-                    },
-                    {
-                        "data":form_data
-                    },
-                    
-                    {
-                        "msg":"data inserted successfully"
-                    }
-                    )
-                    return res.send(response);
-               
-            //    return res.send(response);
-            } else {    
-                response.push(
-                    {
-                    "success":'false'
-                    },
-                    {
-                        "err":"can not insert data into table,check console for detail err"
-                    }
-                    )
-                    return res.send(response);
-                    
+
+        })
+        newUser.save().then((result)=>{
+            console.log(result)
+            response.push(
+                {
+                        "success":"true",
+                },
+                {
+                    "data":newUser
+                },
+                
+                {
+                    "msg":"data inserted successfully using Manual Sign up"
                 }
-            })
-        }
+                )
+                req.session.user=req.user;
+    
+                return res.send(response);
+           
+        }).catch((err)=>{
+            console.log(err);
+            response.push(
+                {
+                "success":'false'
+                },
+                {
+                    "err":err
+                }
+                )
+                return res.send(response);  
+        })
+        // insert query
+                }
         
 })
 }
