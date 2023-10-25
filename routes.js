@@ -2,6 +2,7 @@ const passport=require('passport');
 const userData=require('./models/userData');
 const firebase=require('firebase/app')
 const multer=require('multer');
+const path=require('path')
 const { getStorage, ref, uploadBytesResumable,getDownloadURL } = require("firebase/storage");
 
 const validator=require('validator')
@@ -22,11 +23,8 @@ const firebaseConfig = {
   
 function routes(app){
 app.get('/test1',(req,res)=>{
-    db.query('show TABLES', function(err, result) {
-        console.log(result)
-        res.send(result);
+       res.send("this is working");
     })
-});
 app.get('/auth/google',
   passport.authenticate('google', { scope:[ 'email', 'profile' ] })
 );
@@ -94,9 +92,10 @@ app.get('/click',(req,res)=>{
     res.send('<a href="http://localhost:3000/auth/google">Sign up with google</a> ')
 })
 app.get('/login',(req,res)=>{
-    res.sendFile('E:/care club/login.html')
+    res.render('login')
 })
 app.get('/register',(req,res)=>{
+    P
     res.sendFile('E:/care club/register.html')
 })
 app.post('/login', 

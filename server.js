@@ -3,16 +3,17 @@ const expressSession=require('express-session');
 const passport=require('passport');
 const bodyparser = require('body-parser')
 const mongoose=require('mongoose')
-const db=require('./db')
-const LocalStrategy = require("passport-local").Strategy;
+const path=require('path')
+
 const {initializingPassport} =require("./passportConfig")
-const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 const app=expres();
-const mysql=require('mysql');
-const Add=require('./api/Add');
 initializingPassport(passport);
 app.use(bodyparser.urlencoded({ extended: true }))
 app.use(bodyparser.json())
+app.set("view engine", "ejs");
+
+app.set('views',path.join(__dirname,'/views'));
+
 app.use(passport.initialize());
 app.use(expressSession({
   secret:'this is my secret',
@@ -29,4 +30,4 @@ mongoose
   .catch((err) => console.log(err + "error"));
 
 require('./routes')(app);
-app.listen(3000,()=>console.log("app is running"));
+app.listen(process.env.PORT ||  3000,()=>console.log("app is running"));
