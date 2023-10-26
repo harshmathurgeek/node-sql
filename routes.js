@@ -3,6 +3,7 @@ const userData=require('./models/userData');
 const firebase=require('firebase/app')
 const multer=require('multer');
 const path=require('path')
+
 const { getStorage, ref, uploadBytesResumable,getDownloadURL } = require("firebase/storage");
 
 const validator=require('validator')
@@ -23,6 +24,10 @@ const firebaseConfig = {
   
   
 function routes(app){
+const updateDetails=require('./controllers/Details')
+
+app.get('/details',(req,res)=>updateDetails.getDetailsFile(req,res)); //rendring detail ejs file
+app.post('/details',updateDetails.addDetails(userData))//handelin detail
 app.get('/test1',(req,res)=>{
        res.send("this is working");
     })  

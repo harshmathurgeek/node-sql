@@ -5,6 +5,8 @@ const Sc=mongoose.Schema({
     u_password:{type:String,required:true},
     Image_URL:{type:String,required:true},
     u_phone:{type:Number,default:null} ,
+    u_city:{type:String,default:null} ,
+
     G_user:{type:Boolean,required:true,default:false}   
 })
 const Model=mongoose.model('userData',Sc)
