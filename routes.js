@@ -13,7 +13,6 @@ const firebaseConfig = {
     storageBucket: "care-club-4b0b6.appspot.com",
     messagingSenderId: "1059626952989",
     appId: "1:1059626952989:web:1b186213e3a8e73cf599f4",
-    scope: ['profile', 'email'],
 
 
   }; 
@@ -26,7 +25,7 @@ const firebaseConfig = {
 function routes(app){
 app.get('/test1',(req,res)=>{
        res.send("this is working");
-    })
+    })  
 app.get('/auth/google',
   passport.authenticate('google', { scope:[ 'email', 'profile' ] })
 );
@@ -89,10 +88,10 @@ else{
 }})
 
 
-
 app.get('/click',(req,res)=>{
-    res.send('<a href="https://careclubapi.onrender.com/auth/google/callback">Sign up with google</a> ')
-})
+    res.send('<a href="https://careclubapi.onrender.com/auth/google?scope=email"> Sign up with google</a> ')
+}) 
+// https://careclubapi.onrender.com/auth/google/callback
 app.get('/login',(req,res)=>{
     res.render('login')
 })

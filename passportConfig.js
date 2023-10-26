@@ -37,7 +37,7 @@ passport.use(new GoogleStrategy({
     clientSecret: "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",
     callbackURL: "https://careclubapi.onrender.com/auth/google/callback",
     passReqToCallback : true,
-    
+    scope:[ 'email', 'profile' ]
   },
   function(request, accessToken, refreshToken, profile, done) {
     // console.log(profile);
