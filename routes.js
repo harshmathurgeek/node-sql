@@ -12,7 +12,10 @@ const firebaseConfig = {
     projectId: "care-club-4b0b6",
     storageBucket: "care-club-4b0b6.appspot.com",
     messagingSenderId: "1059626952989",
-    appId: "1:1059626952989:web:1b186213e3a8e73cf599f4"
+    appId: "1:1059626952989:web:1b186213e3a8e73cf599f4",
+    scope: ['profile', 'email'],
+
+
   }; 
   firebase.initializeApp(firebaseConfig);
   const storage = getStorage();
