@@ -5,7 +5,7 @@ res.render("details");
 }
 const addDetails=(userData)=>async(req,res)=>{
     var response=[];
-    let result= await userData.updateOne({ _id: req.session.user._id }, { $set: { u_city:req.body.u_city,u_phone:req.body.u_phone} },(err,result)=>{
+     await userData.updateOne({ _id: req.session.user._id }, { $set: { u_city:req.body.u_city,u_phone:req.body.u_phone} },(err,result)=>{
         if(err){
             response.push({
                 "success":'false'
@@ -16,13 +16,14 @@ const addDetails=(userData)=>async(req,res)=>{
             )
         }
         else{
+            console.log(req.session)
             response.push(
                 {
                 "success":'true',
                },
                {
     
-                   "_id":req.session.user._id
+                   "data":result
                },
                {
                 "msg":"Details Have Been Updated "
