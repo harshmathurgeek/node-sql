@@ -1,29 +1,22 @@
 const LocalStrategy=require('passport-local').Strategy;
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 
-const db=require('./db');
+// const db=require('./db');
+const userData=require('./models/userData')
 exports.initializingPassport=(passport)=>{
-passport.use(new LocalStrategy( {usernameField:'email'},(email,password,done)=>{
-    var userData;
-               db.query(`SELECT * FROM user_data WHERE u_email='${email}'`,   function  (err,rows)     {
-          console.log("Asdasadadasdasdasdad");
-                if(rows.length <=0){
-                    return done(null,false)
-                }
-            else{
+passport.use(new LocalStrategy( {usernameField:'email'},async(email,password,done)=>{
+    let user=await userData.findOne({u_email:email})            
+           if(!user){
+             done(null,false)
 
-                let user=JSON.parse(JSON.stringify(rows))
-                userData=user;
-            console.log(userData[0].u_password);
-                if(userData[0].u_password !== password ){
-                    return done(null,false)
-                }
-                return done(null,userData);
-                }
+           }else{
+            if(user.u_password !== password ){
+               done(null,false)
+          }
+             done(null,user);
+           }
             
-            })    
-
-            passport.serializeUser((user,done ) => {
+          passport.serializeUser((user,done ) => {
                 // console.log(user)
         
                       done(null, user);
