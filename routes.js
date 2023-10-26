@@ -88,7 +88,7 @@ else{
 
 
 app.get('/click',(req,res)=>{
-    res.send('<a href="http://localhost:3000/auth/google">Sign up with google</a> ')
+    res.send('<a href="https://careclubapi.onrender.com/auth/google/callback">Sign up with google</a> ')
 })
 app.get('/login',(req,res)=>{
     res.render('login')
