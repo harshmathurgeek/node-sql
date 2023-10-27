@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event</title>
+</head>
+<body>
+    <form action="/create-event" method="post" enctype="multipart/form-data">
+        <input type="text" name="e_name" placeholder="enter event name">
+        <textarea name="e_desc"  cols="20" rows="5"  placeholder="enter description"></textarea>
+        <input type="text" name="e_location" placeholder="enter location">
+        <input type="file" name="e_image"  >
+        <input type="date" name="e_date" placeholder="enter Date" >   
+        <input type="number" name="e_time" placeholder="enter  time">
+        <select name="e_timezone">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>

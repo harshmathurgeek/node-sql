@@ -1,5 +1,6 @@
 const passport=require('passport');
 const userData=require('./models/userData');
+const eventData=require('./models/event');
 const firebase=require('firebase/app')
 const multer=require('multer');
 const path=require('path')
@@ -23,11 +24,13 @@ const firebaseConfig = {
   const upload = multer({ storage: multer.memoryStorage() });
   
   
+const updateDetails=require('./controllers/Details');
+const eventDetails=require('./controllers/event')
 function routes(app){
-const updateDetails=require('./controllers/Details')
-
 app.get('/details',(req,res)=>updateDetails.getDetailsFile(req,res)); //rendring detail ejs file
 app.post('/details',updateDetails.addDetails(userData))//handelin detail
+app.get('/get-event',(req,res)=>eventDetails.getEventFile(req,res));//rendring event ejs file 
+app.post('/create-event',upload.single("e_image"),eventDetails.createEvent(eventData,storage))//handeling event
 app.get('/test1',(req,res)=>{
        res.send("this is working");
     })  
