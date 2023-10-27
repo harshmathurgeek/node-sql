@@ -5,6 +5,7 @@ res.render("details");
 const addDetails=(userData)=>async(req,res)=>{
     var response=[];
     let result= await userData.updateOne({ _id: req.session.user._id }, { $set: { u_city:req.body.u_city,u_phone:req.body.u_phone} })
+    console.log("heyyy")
     console.log(req.session.user) 
     if(result.acknowledged){
         response.push(
