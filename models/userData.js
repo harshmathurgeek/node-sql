@@ -7,7 +7,7 @@ const Sc=mongoose.Schema({
     u_phone:{type:Number,default:null} ,
     u_city:{type:String,default:null} ,
 
-    G_user:{type:Boolean,required:true,default:false}   
+    G_user:{type:Boolean,required:true,default:false},
 })
 const Model=mongoose.model('userData',Sc)
 module.exports=Model

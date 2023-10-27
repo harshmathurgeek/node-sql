@@ -8,7 +8,8 @@ const Sc=mongoose.Schema({
     e_time:{type:Number,required:true},
     e_timezone:{type:String,required:true},
     e_org_id:{type:mongoose.Schema.ObjectId,required:true} ,
-    e_org_contact:{type:Number,required:true} ,
+    e_org_contact:{type:Number,required:true},
+    e_hashtags:{type:Object,required:true}
 
 })
 const Model=mongoose.model('event',Sc)
