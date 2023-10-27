@@ -47,6 +47,8 @@ app.get( '/auth/google/callback',passport.authenticate( 'google',{failureRedirec
                 "msg":'welcome back old user'
             }
             )
+            req.session.user=user;
+
             return res.send(response);
   }
 else{
@@ -74,7 +76,7 @@ else{
                 "msg":"data inserted successfully using google API"
             }
             )
-            req.session.user=req.user;
+            req.session.user=newUser;
 
             return res.send(response);
        
