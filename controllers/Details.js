@@ -4,7 +4,7 @@ res.render("details");
 }
 const addDetails=(userData)=>async(req,res)=>{
     var response=[];
-    let result= await userData.updateOne({ _id: req.session.user._id }, { $set: { u_city:req.body.u_city,u_phone:req.body.u_phone} })
+    let result= await userData.updateOne({ _id: req.session.user._id }, { $set: { u_city:req.body.u_city,u_phone:req.body.u_phone,LIC_NO:req.body.LIC_NO} })
     if(result.modifiedCount == 1){
         response.push(
             {

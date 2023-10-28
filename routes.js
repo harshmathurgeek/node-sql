@@ -31,9 +31,9 @@ app.get('/details',(req,res)=>updateDetails.getDetailsFile(req,res)); //rendring
 app.post('/details',updateDetails.addDetails(userData))//handelin detail
 app.get('/get-event',(req,res)=>eventDetails.getEventFile(req,res));//rendring event ejs file 
 app.post('/create-event',upload.single("e_image"),eventDetails.createEvent(eventData,storage))//handeling event
-app.get('/test1',(req,res)=>{
-       res.send("this is working");
-    })  
+app.get('/test',(req,res)=>{
+    res.send("test")
+})
 app.get('/auth/google',
   passport.authenticate('google', { scope:[ 'email', 'profile' ] })
 );
@@ -149,6 +149,7 @@ app.get('/login/error',(req,res)=>{
 //     res.send(response);
 //   });
 // });
+
 app.post('/register',upload.single("Image_URL"),async(req,res)=>{
 
     var response=[];
@@ -194,17 +195,23 @@ app.post('/register',upload.single("Image_URL"),async(req,res)=>{
 
     // if no error
     if (!errors) {
-          
-        // const hashpw = await bcrypt.hash(req.body.password, 10);
-        const storageRef = ref(storage, `files/${+Math.floor((Math.random() * 1000) + 1)+"-"+req.file.originalname}`);
+        var downloadurl
+          if(req.file){
+
+              // const hashpw = await bcrypt.hash(req.body.password, 10);
+              const storageRef = ref(storage, `files/${+Math.floor((Math.random() * 1000) + 1)+"-"+req.file.originalname}`);
         const metaData={
             contentType:req.file.mimetype,
         };
         uploadBytesResumable(storageRef, req.file.buffer,metaData).then((snapshot) => {
           })
           const snapshot=await uploadBytesResumable(storageRef, req.file.buffer,metaData)
-        const downloadurl=await getDownloadURL(snapshot.ref);
-    
+         downloadurl=await getDownloadURL(snapshot.ref);
+            }
+    else{
+        downloadurl=null
+    }
+
         let newUser =new userData ({
             u_name:req.body.name,
             u_email: req.body.email,
