@@ -31,6 +31,8 @@ app.get('/details',(req,res)=>updateDetails.getDetailsFile(req,res)); //rendring
 app.post('/details',updateDetails.addDetails(userData))//handelin detail
 app.get('/get-event',(req,res)=>eventDetails.getEventFile(req,res));//rendring event ejs file 
 app.post('/create-event',upload.single("e_image"),eventDetails.createEvent(eventData,storage))//handeling event
+app.get('/events',(req,res)=>eventDetails.getAllEvent(req,res,eventData));//getting all events
+app.post('/join-event/:id',(req,res)=>eventDetails.joinEvents(req,res,eventData))
 app.get('/test',(req,res)=>{
     res.send("test")
 })

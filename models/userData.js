@@ -8,6 +8,7 @@ const Sc=mongoose.Schema({
     u_city:{type:String,default:null} ,
     LIC_NO:{type:String,default:null},
     G_user:{type:Boolean,required:true,default:false},
-})
+    u_events_joined:[{type:mongoose.Schema.ObjectId,default:null,ref:'event'}]
+})    
 const Model=mongoose.model('userData',Sc)
 module.exports=Model

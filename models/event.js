@@ -9,7 +9,8 @@ const Sc=mongoose.Schema({
     e_timezone:{type:String,required:true},
     e_org_id:{type:mongoose.Schema.ObjectId,required:true} ,
     e_org_contact:{type:Number,required:true},
-    e_hashtags:{type:Object,required:true}
+    e_hashtags:{type:Object,required:true},
+    e_joinies:[{type:mongoose.Schema.ObjectId,default:null,ref:'userData'}]
 
 })
 const Model=mongoose.model('event',Sc)

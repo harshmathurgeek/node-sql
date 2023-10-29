@@ -4,6 +4,12 @@ const { getStorage, ref, uploadBytesResumable,getDownloadURL } = require("fireba
 const getEventFile=(req,res)=>{
 res.render("event");
 }
+const getAllEvent=async(req,res,eventData)=>{
+    let result=await eventData.find();
+    console.log(result)
+    res.send(result);
+    // res.render("AllEvents",{tittle:"ecents will work"});
+}
 const createEvent=(eventData,storage)=>async(req,res)=>{
    
     const storageRef = ref(storage, `events/${+Math.floor((Math.random() * 1000) + 1)+"-"+req.file.originalname}`);
@@ -35,7 +41,7 @@ const createEvent=(eventData,storage)=>async(req,res)=>{
         e_org_contact:req.session.user.u_phone,
         e_hashtags:hastags
     });
-    
+     
     newEvent.save().then((result)=>{
         console.log(result)
         response.push(
@@ -65,8 +71,24 @@ const createEvent=(eventData,storage)=>async(req,res)=>{
             )
             return res.send(response);  
     });
+};
+const joinEvents=async(req,res,eventData)=>{
+    let result1=await eventData.findOne({_id:req.params.id})
+    
+    // let result=await eventData.updateOne({_id:req.params.id},{$push: { e_joinies: req.session.user._id }})
+    console.log(req.session.user._id)
+    let check=result1.e_joinies;
+
+    console.log(check[0]);
+    if (check[0].equals(req.session.user._id)) {
+        console.log("true")
+    }
+        res.send(result1.e_joinies[1]);
 }
+
 module.exports={
     getEventFile,
-    createEvent
+    createEvent,
+    getAllEvent,
+    joinEvents
 }
